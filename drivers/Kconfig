@@ -1,0 +1,263 @@
+menu "Board Config"
+
+menu "Memory Config"
+
+config BSP_USING_SDRAM
+    bool "Enable SDRAM"
+    default n
+
+config BSP_SDRAM_SIZE
+    int "SDRAM size (MB)"
+    depends on BSP_USING_SDRAM
+    default 32
+
+endmenu
+
+menu "UART Config"
+
+config BSP_USING_UART1
+    bool "Enable UART1"
+    select RT_USING_SERIAL
+    default y    
+	
+config BSP_USING_UART2
+    bool "Enable UART2"
+    select RT_USING_SERIAL
+    default y  
+
+endmenu
+
+menu "USB Config"
+
+config BSP_USING_USBD
+    bool "Enable USB Device"
+    select RT_USING_USB_DEVICE
+    default n
+
+config BSP_USING_USBH
+    bool "Enable USB Host"
+    select RT_USING_USB_HOST
+    default n
+
+endmenu
+
+menu "LCD Config"
+
+config BSP_USING_LCD
+    bool "Enable LCD Controller"
+    select BSP_USING_SDRAM
+    default n
+
+if BSP_USING_LCD
+    config BSP_LCD_HEIGHT
+        int "LCD Height"
+        default 272
+    config BSP_LCD_WIDTH
+        int "LCD Width"
+        default 480
+    config BSP_LCD_HSYNC
+        int "LCD Horizontal synchronization"
+        default 1
+    config BSP_LCD_HBP
+        int "LCD Horizontal back porch"
+        default 40
+    config BSP_LCD_HFP
+        int "LCD Horizontal front porch"
+        default 5
+    config BSP_LCD_VSYNC
+        int "LCD Vertical synchronization"
+        default 1
+    config BSP_LCD_VBP
+        int "LCD Vertical back porch"
+        default 8
+    config BSP_LCD_VFP
+        int "LCD Vertical front porch"
+        default 8
+endif
+
+endmenu
+
+menu "I2C Config"
+    config BSP_USING_I2C1
+        bool "Enable I2C1"
+        select BSP_USING_PIN
+        select RT_USING_I2C
+        select RT_USING_I2C_BITOPS
+        default n
+    if BSP_USING_I2C1
+        config BSP_I2C1_NAME
+            string "I2C1 bus name"
+            default "i2c1"
+
+        config BSP_I2C1_SDA
+            int "I2C1 SDA pin index"
+            default 165
+
+        config BSP_I2C1_SCL
+            int "I2C1 SCL pin index"
+            default 164
+    endif
+
+    config BSP_USING_I2C2
+        bool "Enable I2C2"
+        select BSP_USING_PIN
+        select RT_USING_I2C
+        select RT_USING_I2C_BITOPS
+        default n
+    if BSP_USING_I2C2
+        config BSP_I2C2_NAME
+            string "I2C2 bus name"
+            default "i2c2"
+            
+        config BSP_I2C2_SDA
+            int "I2C2 SDA pin index"
+            default 46
+
+        config BSP_I2C2_SCL
+            int "I2C2 SCL pin index"
+            default 45
+    endif
+
+    config BSP_USING_I2C3
+        bool "Enable I2C3"
+        select BSP_USING_PIN
+        select RT_USING_I2C
+        select RT_USING_I2C_BITOPS
+        default n
+    if BSP_USING_I2C3
+        config BSP_I2C3_NAME
+            string "I2C3 bus name"
+            default "i2c3"
+            
+        config BSP_I2C3_SDA
+            int "I2C3 SDA pin index"
+            default 85
+
+        config BSP_I2C3_SCL
+            int "I2C3 SCL pin index"
+            default 84
+    endif
+
+    config BSP_USING_I2C4
+        bool "Enable I2C4"
+        select BSP_USING_PIN
+        select RT_USING_I2C
+        select RT_USING_I2C_BITOPS
+        default n
+    if BSP_USING_I2C4
+        config BSP_I2C4_NAME
+            string "I2C4 bus name"
+            default "i2c4"
+            
+        config BSP_I2C4_SDA
+            int "I2C4 SDA pin index"
+            default 89
+
+        config BSP_I2C4_SCL
+            int "I2C4 SCL pin index"
+            default 88
+    endif
+
+    config BSP_USING_I2C5
+        bool "Enable I2C5"
+        select BSP_USING_PIN
+        select RT_USING_I2C
+        select RT_USING_I2C_BITOPS
+        default n
+    if BSP_USING_I2C5
+        config BSP_I2C5_NAME
+            string "I2C5 bus name"
+            default "i2c5"
+            
+        config BSP_I2C5_SDA
+            int "I2C5 SDA pin index"
+            default 0
+
+        config BSP_I2C5_SCL
+            int "I2C5 SCL pin index"
+            default 0
+    endif
+
+    config BSP_USING_I2C6
+        bool "Enable I2C6"
+        select BSP_USING_PIN
+        select RT_USING_I2C
+        select RT_USING_I2C_BITOPS
+        default n
+    if BSP_USING_I2C6
+        config BSP_I2C6_NAME
+            string "I2C6 bus name"
+            default "i2c6"
+            
+        config BSP_I2C6_SDA
+            int "I2C6 SDA pin index"
+            default 0
+
+        config BSP_I2C6_SCL
+            int "I2C6 SCL pin index"
+            default 0
+    endif
+
+    config BSP_USING_I2C7
+        bool "Enable I2C7"
+        select BSP_USING_PIN
+        select RT_USING_I2C
+        select RT_USING_I2C_BITOPS
+        default n
+    if BSP_USING_I2C7
+        config BSP_I2C7_NAME
+            string "I2C7 bus name"
+            default "i2c7"
+            
+        config BSP_I2C7_SDA
+            int "I2C7 SDA pin index"
+            default 0
+
+        config BSP_I2C7_SCL
+            int "I2C7 SCL pin index"
+            default 0
+    endif
+
+    config BSP_USING_I2C8
+        bool "Enable I2C8"
+        select BSP_USING_PIN
+        select RT_USING_I2C
+        select RT_USING_I2C_BITOPS
+        default n
+    if BSP_USING_I2C8
+        config BSP_I2C8_NAME
+            string "I2C8 bus name"
+            default "i2c8"
+            
+        config BSP_I2C8_SDA
+            int "I2C8 SDA pin index"
+            default 0
+
+        config BSP_I2C8_SCL
+            int "I2C8 SCL pin index"
+            default 0
+    endif
+endmenu
+
+menu "CTouchPad Config"
+    config BSP_USING_TOUCH
+        bool "Enable Touch drivers"
+        select BSP_USING_I2C1
+        default n
+    if BSP_USING_TOUCH
+        config BSP_TOUCH_INT_PIN
+            int "Touch interrupt pin"
+            default 84
+        config BSP_TOUCH_RST_PIN
+            int "Touch reset pin"
+            default 7
+    endif
+endmenu
+
+config BSP_USING_PIN
+    bool "Enable GPIO-PIN Drivers"
+    select RT_USING_PIN
+    default y
+
+
+endmenu
