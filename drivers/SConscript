@@ -7,6 +7,7 @@ src = Split("""
 board.c
 drv_mpu.c
 drv_cache.c
+drv_romfs.c
 """)
 
 if GetDepend(['RT_USING_SERIAL']):
@@ -29,6 +30,12 @@ if GetDepend(['BSP_USING_PIN']):
 
 if GetDepend(['RT_USING_I2C_BITOPS']):
     src += ['drv_i2c.c']
+
+if GetDepend(['BSP_USING_QSPI_FLASH']):
+    src += ['drv_qspi.c', 'stm32_qspi.c']
+
+if GetDepend(['BSP_USING_RAMDISK']):
+    src += ['drv_ramdisk.c']
 
 CPPPATH = [cwd]
 

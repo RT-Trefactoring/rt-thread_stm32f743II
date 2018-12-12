@@ -106,6 +106,7 @@
 #define RT_USING_I2C
 #define RT_USING_I2C_BITOPS
 #define RT_USING_PIN
+#define RT_USING_MTD_NOR
 
 /* Using WiFi */
 
@@ -191,6 +192,12 @@
 #define GUIENGINE_IMAGE_LODEPNG
 #define GUIENGINE_IMAGE_CONTAINER
 #define GUIENGINE_USING_DEMO
+#define PKG_USING_LITTLEFS
+#define PKG_USING_LITTLEFS_V090
+#define LFS_READ_SIZE 256
+#define LFS_WRITE_SIZE 256
+#define LFS_BLOCK_SIZE 4096
+#define LFS_LOOKAHEAD 512
 
 /* peripheral libraries and drivers */
 
@@ -198,12 +205,7 @@
 /* miscellaneous packages */
 
 
-/* sample package */
-
 /* samples: kernel and components samples */
-
-
-/* example package: hello */
 
 
 /* Privated Packages of RealThread */
@@ -233,14 +235,14 @@
 /* LCD Config */
 
 #define BSP_USING_LCD
-#define BSP_LCD_HEIGHT 272
-#define BSP_LCD_WIDTH 480
+#define BSP_LCD_HEIGHT 480
+#define BSP_LCD_WIDTH 800
 #define BSP_LCD_HSYNC 1
-#define BSP_LCD_HBP 40
-#define BSP_LCD_HFP 5
+#define BSP_LCD_HBP 46
+#define BSP_LCD_HFP 210
 #define BSP_LCD_VSYNC 1
-#define BSP_LCD_VBP 8
-#define BSP_LCD_VFP 8
+#define BSP_LCD_VBP 23
+#define BSP_LCD_VFP 22
 
 /* I2C Config */
 
@@ -254,6 +256,12 @@
 #define BSP_USING_TOUCH
 #define BSP_TOUCH_INT_PIN 84
 #define BSP_TOUCH_RST_PIN 7
+
+/* Select ramdisk drivers */
+
+
+/* Select qspi flash drivers */
+
 #define BSP_USING_PIN
 
 #endif

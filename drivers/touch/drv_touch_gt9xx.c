@@ -151,7 +151,7 @@ static rt_err_t gt9xx_read_point(touch_msg_t msg)
             return RT_EOK;
         }
         msg->event = TOUCH_EVENT_NONE;
-        return RT_EOK;
+        return RT_ERROR;
     }
 
     msg->x = ((rt_uint16_t)buf[3] << 8) | buf[2];

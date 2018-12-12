@@ -10,7 +10,6 @@
       <TargetName>rt-thread_stm32h7xx</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
-      <pCCUsed>5060750::V5.06 update 6 (build 750)::ARMCC</pCCUsed>
       <uAC6>0</uAC6>
       <TargetOption>
         <TargetCommonOption>
@@ -336,9 +335,9 @@
             <v6Rtti>0</v6Rtti>
             <VariousControls>
               <MiscControls></MiscControls>
-              <Define>USE_HAL_DRIVER, RT_USING_ARM_LIBC, STM32H743xx</Define>
+              <Define>USE_HAL_DRIVER, LFS_CONFIG=lfs_config.h, RT_USING_ARM_LIBC, STM32H743xx</Define>
               <Undefine></Undefine>
-              <IncludePath>applications;.;drivers;drivers\touch;.;Libraries\CMSIS\Device\ST\STM32H7xx\Include;Libraries\CMSIS\Include;Libraries\STM32H7xx_HAL_Driver\Inc;packages\gui_engine-latest\include;packages\gui_engine-latest\libraries\lodepng;packages\gui_engine-latest\src;packages\gui_engine-latest\example;..\rt-thread\include;..\rt-thread\libcpu\arm\cortex-m7;..\rt-thread\libcpu\arm\common;..\rt-thread\components\dfs\include;..\rt-thread\components\dfs\filesystems\devfs;..\rt-thread\components\dfs\filesystems\elmfat;..\rt-thread\components\dfs\filesystems\romfs;..\rt-thread\components\drivers\include;..\rt-thread\components\drivers\include;..\rt-thread\components\drivers\include;..\rt-thread\components\drivers\include;..\rt-thread\components\drivers\include;..\rt-thread\components\drivers\usb\usbdevice;..\rt-thread\components\finsh;..\rt-thread\components\libc\compilers\armlibc;..\rt-thread\components\libc\compilers\common</IncludePath>
+              <IncludePath>applications;.;drivers;drivers\touch;.;Libraries\CMSIS\Device\ST\STM32H7xx\Include;Libraries\CMSIS\Include;Libraries\STM32H7xx_HAL_Driver\Inc;packages\gui_engine-latest\include;packages\gui_engine-latest\libraries\lodepng;packages\gui_engine-latest\src;packages\gui_engine-latest\example;packages\littlefs-v0.9.0;..\rt-thread\include;..\rt-thread\libcpu\arm\cortex-m7;..\rt-thread\libcpu\arm\common;..\rt-thread\components\dfs\include;..\rt-thread\components\dfs\filesystems\devfs;..\rt-thread\components\dfs\filesystems\elmfat;..\rt-thread\components\dfs\filesystems\romfs;..\rt-thread\components\drivers\include;..\rt-thread\components\drivers\include;..\rt-thread\components\drivers\include;..\rt-thread\components\drivers\include;..\rt-thread\components\drivers\include;..\rt-thread\components\drivers\include;..\rt-thread\components\drivers\usb\usbdevice;..\rt-thread\components\finsh;..\rt-thread\components\libc\compilers\armlibc;..\rt-thread\components\libc\compilers\common</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -413,6 +412,11 @@
               <FilePath>drivers\drv_cache.c</FilePath>
             </File>
             <File>
+              <FileName>drv_romfs.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>drivers\drv_romfs.c</FilePath>
+            </File>
+            <File>
               <FileName>drv_usart.c</FileName>
               <FileType>1</FileType>
               <FilePath>drivers\drv_usart.c</FilePath>
@@ -453,14 +457,9 @@
               <FilePath>drivers\touch\drv_touch.c</FilePath>
             </File>
             <File>
-              <FileName>drv_touch_ft5x06.c</FileName>
+              <FileName>drv_touch_ft.c</FileName>
               <FileType>1</FileType>
-              <FilePath>drivers\touch\drv_touch_ft5x06.c</FilePath>
-            </File>
-            <File>
-              <FileName>drv_touch_ft7511.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>drivers\touch\drv_touch_ft7511.c</FilePath>
+              <FilePath>drivers\touch\drv_touch_ft.c</FilePath>
             </File>
             <File>
               <FileName>drv_touch_gt9xx.c</FileName>
@@ -1115,6 +1114,31 @@
           </Files>
         </Group>
         <Group>
+          <GroupName>littlefs</GroupName>
+          <Files>
+            <File>
+              <FileName>dfs_lfs.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>packages\littlefs-v0.9.0\dfs_lfs.c</FilePath>
+            </File>
+            <File>
+              <FileName>lfs.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>packages\littlefs-v0.9.0\lfs.c</FilePath>
+            </File>
+            <File>
+              <FileName>lfs_crc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>packages\littlefs-v0.9.0\lfs_crc.c</FilePath>
+            </File>
+            <File>
+              <FileName>lfs_util.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>packages\littlefs-v0.9.0\lfs_util.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
           <GroupName>Kernel</GroupName>
           <Files>
             <File>
@@ -1316,6 +1340,11 @@
               <FileName>pin.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\rt-thread\components\drivers\misc\pin.c</FilePath>
+            </File>
+            <File>
+              <FileName>mtd_nor.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\rt-thread\components\drivers\mtd\mtd_nor.c</FilePath>
             </File>
             <File>
               <FileName>serial.c</FileName>

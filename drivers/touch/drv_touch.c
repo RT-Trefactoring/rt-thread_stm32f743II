@@ -111,27 +111,25 @@ static void touch_thread_entry(void *parameter)
         {
             continue;
         }
-        if (touch->ops->read_point(&msg) != RT_EOK)
+        while(touch->ops->read_point(&msg) == RT_EOK)
         {
-            touch->ops->isr_enable(RT_TRUE);
-            continue;
+            switch (msg.event)
+            {
+            case TOUCH_EVENT_UP:
+                post_up_event(msg.x, msg.y, emouse_id);
+                break;
+            case TOUCH_EVENT_DOWN:
+                emouse_id = rt_tick_get();
+                post_down_event(msg.x, msg.y, emouse_id);
+                break;
+            case TOUCH_EVENT_MOVE:
+                post_motion_event(msg.x, msg.y, emouse_id);
+                break;
+            default:
+                break;
+            }
+            rt_thread_delay(RT_TICK_PER_SECOND / BSP_TOUCH_SAMPLE_HZ);
         }
-        switch (msg.event)
-        {
-        case TOUCH_EVENT_UP:
-            post_up_event(msg.x, msg.y, emouse_id);
-            break;
-        case TOUCH_EVENT_DOWN:
-            emouse_id = rt_tick_get();
-            post_down_event(msg.x, msg.y, emouse_id);
-            break;
-        case TOUCH_EVENT_MOVE:
-            post_motion_event(msg.x, msg.y, emouse_id);
-            break;
-        default:
-            break;
-        }
-        rt_thread_delay(RT_TICK_PER_SECOND / BSP_TOUCH_SAMPLE_HZ);
         touch->ops->isr_enable(RT_TRUE);
     }
 }

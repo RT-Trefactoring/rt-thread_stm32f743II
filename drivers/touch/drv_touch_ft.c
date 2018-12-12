@@ -1,6 +1,6 @@
 /*
- * File      : drv_ft7511.c
- *             ft7511 touch driver
+ * File      : drv_touch_ft.c
+ *             ft touch driver
  * COPYRIGHT (C) 2006 - 2017, RT-Thread Development Team
  *
  *  This program is free software; you can redistribute it and/or modify
@@ -31,15 +31,15 @@
 #ifdef BSP_USING_TOUCH
 
 #define DBG_ENABLE
-#define DBG_SECTION_NAME  "TOUCH.ft7511"
+#define DBG_SECTION_NAME  "TOUCH.ft"
 #define DBG_LEVEL         TOUCH_DBG_LEVEL
 #define DBG_COLOR
 #include <rtdbg.h>
 
-static struct rt_i2c_bus_device *ft7511_i2c_bus;
-static struct touch_drivers ft7511_driver;
+static struct rt_i2c_bus_device *ft_i2c_bus;
+static struct touch_drivers ft_driver;
 
-static int ft7511_read(struct rt_i2c_bus_device *i2c_bus, rt_uint8_t addr, rt_uint8_t *buffer, rt_size_t length)
+static int ft_read(struct rt_i2c_bus_device *i2c_bus, rt_uint8_t addr, rt_uint8_t *buffer, rt_size_t length)
 {
     int ret = -1;
     int retries = 0;
@@ -47,13 +47,13 @@ static int ft7511_read(struct rt_i2c_bus_device *i2c_bus, rt_uint8_t addr, rt_ui
     struct rt_i2c_msg msgs[] =
     {
         {
-            .addr   = ft7511_driver.address,
+            .addr   = ft_driver.address,
             .flags  = RT_I2C_WR,
             .len    = 1,
             .buf    = &addr,
         },
         {
-            .addr   = ft7511_driver.address,
+            .addr   = ft_driver.address,
             .flags  = RT_I2C_RD,
             .len    = length,
             .buf    = buffer,
@@ -76,7 +76,7 @@ static int ft7511_read(struct rt_i2c_bus_device *i2c_bus, rt_uint8_t addr, rt_ui
     return ret;
 }
 
-static void ft7511_write(touch_drv_t driver, struct rt_i2c_bus_device *i2c_bus, rt_uint8_t addr, rt_uint8_t *buffer, rt_size_t length)
+static void ft_write(touch_drv_t driver, struct rt_i2c_bus_device *i2c_bus, rt_uint8_t addr, rt_uint8_t *buffer, rt_size_t length)
 {
 
     rt_uint8_t *send_buffer = rt_malloc(length + 1);
@@ -89,7 +89,7 @@ static void ft7511_write(touch_drv_t driver, struct rt_i2c_bus_device *i2c_bus, 
     struct rt_i2c_msg msgs[] =
     {
         {
-            .addr   = ft7511_driver.address,
+            .addr   = ft_driver.address,
             .flags  = RT_I2C_WR,
             .len    = length + 1,
             .buf    = send_buffer,
@@ -101,27 +101,27 @@ static void ft7511_write(touch_drv_t driver, struct rt_i2c_bus_device *i2c_bus, 
     send_buffer = RT_NULL;
 }
 
-static void ft7511_isr_enable(rt_bool_t enable)
+static void ft_isr_enable(rt_bool_t enable)
 {
     rt_pin_irq_enable(BSP_TOUCH_INT_PIN, enable);
 }
 
-static void ft7511_touch_isr(void *parameter)
+static void ft_touch_isr(void *parameter)
 {
-    ft7511_isr_enable(RT_FALSE);
-    rt_sem_release(ft7511_driver.isr_sem);
+    ft_isr_enable(RT_FALSE);
+    rt_sem_release(ft_driver.isr_sem);
 }
 
-static rt_err_t ft7511_read_point(touch_msg_t msg)
+static rt_err_t ft_read_point(touch_msg_t msg)
 {
     int ret = -1;
     uint8_t point_num = 0;
     static uint8_t s_tp_down = 0;
     uint8_t point[6];
-    ret = ft7511_read(ft7511_i2c_bus, 0x02, &point_num, 1);
+    ret = ft_read(ft_i2c_bus, 0x02, &point_num, 1);
     if (ret < 0)
     {
-        return -RT_ERROR;
+        return RT_ERROR;
     }
     
     if (point_num == 0)
@@ -133,13 +133,13 @@ static rt_err_t ft7511_read_point(touch_msg_t msg)
             return RT_EOK;
         }
         msg->event = TOUCH_EVENT_NONE;
-        return RT_EOK;
+        return RT_ERROR;
     }
     
-    ret = ft7511_read(ft7511_i2c_bus, 0x03, point, 6);
+    ret = ft_read(ft_i2c_bus, 0x03, point, 6);
     if (ret < 0)
     {
-        return -RT_ERROR;
+        return RT_ERROR;
     }
 
     msg->x = (point[0]&0x0F) << 8 | point[1];
@@ -155,45 +155,45 @@ static rt_err_t ft7511_read_point(touch_msg_t msg)
     return RT_EOK;
 }
 
-static void ft7511_init(struct rt_i2c_bus_device *i2c_bus)
+static void ft_init(struct rt_i2c_bus_device *i2c_bus)
 {
-    if (ft7511_i2c_bus == RT_NULL)
+    if (ft_i2c_bus == RT_NULL)
     {
-        ft7511_i2c_bus = i2c_bus;
+        ft_i2c_bus = i2c_bus;
     }
-    ft7511_driver.isr_sem = rt_sem_create("ft7511", 0, RT_IPC_FLAG_FIFO);
-    RT_ASSERT(ft7511_driver.isr_sem);
+    ft_driver.isr_sem = rt_sem_create("ft", 0, RT_IPC_FLAG_FIFO);
+    RT_ASSERT(ft_driver.isr_sem);
 
     rt_pin_mode(BSP_TOUCH_INT_PIN, PIN_MODE_INPUT_PULLUP);
-    rt_pin_attach_irq(BSP_TOUCH_INT_PIN, PIN_IRQ_MODE_FALLING, ft7511_touch_isr, RT_NULL);
+    rt_pin_attach_irq(BSP_TOUCH_INT_PIN, PIN_IRQ_MODE_FALLING, ft_touch_isr, RT_NULL);
 
     rt_thread_mdelay(200);
 }
 
-static void ft7511_deinit(void)
+static void ft_deinit(void)
 {
-    if (ft7511_driver.isr_sem)
+    if (ft_driver.isr_sem)
     {
-        rt_sem_delete(ft7511_driver.isr_sem);
-        ft7511_driver.isr_sem = RT_NULL;
+        rt_sem_delete(ft_driver.isr_sem);
+        ft_driver.isr_sem = RT_NULL;
     }
 }
 
-struct touch_ops ft7511_ops =
+struct touch_ops ft_ops =
 {
-    ft7511_isr_enable,
-    ft7511_read_point,
-    ft7511_init,
-    ft7511_deinit,
+    ft_isr_enable,
+    ft_read_point,
+    ft_init,
+    ft_deinit,
 };
 
-static rt_bool_t ft7511_probe(struct rt_i2c_bus_device *i2c_bus)
+static rt_bool_t ft_probe(struct rt_i2c_bus_device *i2c_bus)
 {
     int err = 0;
     uint8_t cid = 0xFF;
 
-    ft7511_i2c_bus = i2c_bus;
-    err = ft7511_read(ft7511_i2c_bus, 0xA3, (uint8_t *)&cid, 1);
+    ft_i2c_bus = i2c_bus;
+    err = ft_read(ft_i2c_bus, 0xA3, (uint8_t *)&cid, 1);
     if (err < 0)
     {
         LOG_E("%s failed: %d", __func__, err);
@@ -207,16 +207,16 @@ static rt_bool_t ft7511_probe(struct rt_i2c_bus_device *i2c_bus)
     return RT_FALSE;
 }
 
-int ft7511_driver_register(void)
+int ft_driver_register(void)
 {
-    ft7511_driver.address = 0x38;
-    ft7511_driver.probe = ft7511_probe;
-    ft7511_driver.ops = &ft7511_ops;
-    ft7511_driver.user_data = RT_NULL;
-    rt_touch_drivers_register(&ft7511_driver);
+    ft_driver.address = 0x38;
+    ft_driver.probe = ft_probe;
+    ft_driver.ops = &ft_ops;
+    ft_driver.user_data = RT_NULL;
+    rt_touch_drivers_register(&ft_driver);
     return 0;
 }
 
-INIT_DEVICE_EXPORT(ft7511_driver_register);
+INIT_DEVICE_EXPORT(ft_driver_register);
 
 #endif
