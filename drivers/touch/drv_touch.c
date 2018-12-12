@@ -27,6 +27,8 @@
 #ifdef PKG_USING_GUIENGINE
 #include <rtgui/event.h>
 #include <rtgui/rtgui_server.h>
+#elif defined(PKG_USING_LITTLEVGL2RTT)
+#include <littlevgl2rtt.h>
 #endif
 #define BSP_TOUCH_SAMPLE_HZ    (50)
 
@@ -59,6 +61,8 @@ static void post_down_event(rt_uint16_t x, rt_uint16_t y, rt_tick_t ts)
     emouse.ts = rt_tick_get();
     emouse.id = ts;
     rtgui_server_post_event(&emouse.parent, sizeof(emouse));
+#elif defined(PKG_USING_LITTLEVGL2RTT)
+    littlevgl2rtt_send_input_event(x, y, LITTLEVGL2RTT_INPUT_DOWN);
 #endif
 }
 
@@ -77,6 +81,8 @@ static void post_motion_event(rt_uint16_t x, rt_uint16_t y, rt_tick_t ts)
     emouse.ts = rt_tick_get();
     emouse.id = ts;
     rtgui_server_post_event(&emouse.parent, sizeof(emouse));
+#elif defined(PKG_USING_LITTLEVGL2RTT)
+    littlevgl2rtt_send_input_event(x, y, LITTLEVGL2RTT_INPUT_MOVE);
 #endif
 }
 
@@ -95,6 +101,8 @@ static void post_up_event(rt_uint16_t x, rt_uint16_t y, rt_tick_t ts)
     emouse.ts = rt_tick_get();
     emouse.id = ts;
     rtgui_server_post_event(&emouse.parent, sizeof(emouse));
+#elif defined(PKG_USING_LITTLEVGL2RTT)
+    littlevgl2rtt_send_input_event(x, y, LITTLEVGL2RTT_INPUT_MOVE);
 #endif
 }
 

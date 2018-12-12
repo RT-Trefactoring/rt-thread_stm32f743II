@@ -18,6 +18,7 @@
 #include <board.h>
 #include "drv_ltdc.h"
 #include <rthw.h>
+#define SINGLE_FB_MODE
 #define LCD_BITS_PER_PIXEL          (16)
 
 #define LCD_FRAME_BUFFER_SIZE       (BSP_LCD_WIDTH * BSP_LCD_HEIGHT * (LCD_BITS_PER_PIXEL / 8))
@@ -221,9 +222,13 @@ static rt_err_t drv_lcd_init(rt_device_t device)
     pLayerCfg.PixelFormat = LTDC_PIXEL_FORMAT_RGB565;
     pLayerCfg.Alpha = 0xFF;
     pLayerCfg.Alpha0 = 0x00;
-    pLayerCfg.BlendingFactor1 = (rt_uint32_t)6<<8;;
-    pLayerCfg.BlendingFactor2 = (rt_uint32_t)7<<8;;
+    pLayerCfg.BlendingFactor1 = (rt_uint32_t)6<<8;
+    pLayerCfg.BlendingFactor2 = (rt_uint32_t)7<<8;
+#ifdef SINGLE_FB_MODE
+    pLayerCfg.FBStartAdress = (uint32_t)lcd_drv->framebuffer;
+#else
     pLayerCfg.FBStartAdress = (uint32_t)lcd_drv->front_buf_info.buff;
+#endif
     pLayerCfg.ImageWidth = BSP_LCD_WIDTH;
     pLayerCfg.ImageHeight = BSP_LCD_HEIGHT;
     pLayerCfg.Backcolor.Blue = 0;
@@ -256,6 +261,7 @@ void LTDC_IRQHandler(void)
 
 void HAL_LTDC_LineEventCallback(LTDC_HandleTypeDef *hltdc)
 {
+#ifndef SINGLE_FB_MODE
     struct drv_lcd * lcd_drv = &lcd;
     
     if (lcd_drv->current_buf == FRONT)
@@ -281,6 +287,7 @@ void HAL_LTDC_LineEventCallback(LTDC_HandleTypeDef *hltdc)
         }
     }
     __HAL_LTDC_ENABLE_IT(hltdc, LTDC_IT_LI);
+#endif
 }
 
 static rt_err_t drv_lcd_control(rt_device_t device, int cmd, void *args)
@@ -291,6 +298,7 @@ static rt_err_t drv_lcd_control(rt_device_t device, int cmd, void *args)
     switch(cmd)
     {
     case RTGRAPHIC_CTRL_RECT_UPDATE:
+#ifndef SINGLE_FB_MODE
         /* update */
         while ((lcd_drv->front_buf_info.status != EMPTY) && (lcd_drv->back_buf_info.status != EMPTY))
         {
@@ -312,6 +320,7 @@ static rt_err_t drv_lcd_control(rt_device_t device, int cmd, void *args)
             memcp_tick = rt_tick_get() - memcp_tick_tmp;
             lcd_drv->back_buf_info.status = FULL;
         }
+#endif
         break;
 
     case RTGRAPHIC_CTRL_POWERON:
